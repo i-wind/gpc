@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #@script   : pre-commit.rb
 #@created  : 2013-03-29 10:15
-#@changed  : 2013-03-30 00:59
-#@revision : 4
+#@changed  : 2013-03-30 01:36
+#@revision : 5
 #@about    :
 
 # git diff --cached --name-status
@@ -21,15 +21,9 @@ fileNames.split(/\n/).each() { |name|
         ret = time.strftime("%Y-%m-%d %H:%M")
         `sed -i -r 's/(@changed\s*:\s+)[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\\1#{ret}/' #{name}`
         # change script revision
-        value = 0
-        File.open(name) do |f|
-            script = f.read()
-            #if match = Regexp.new("@revision : (\d+)").match(script)
-            if match = /@revision : (\d+)/.match(script)
-                value = match[1].to_i + 1
-            end
-        end
-        if value
+        digit = `cat #{name} | grep -Po '@revision\\s*:\\s+\\d+' | grep -Po '\\d+'`
+        if digit
+            value = digit.to_i + 1
             puts "Changing revision to #{value}"
             `sed -i -r 's/(@revision\s*:\s+)[[:digit:]]+/\\1#{value}/' #{name}`
         end
