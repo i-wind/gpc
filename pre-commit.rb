@@ -2,25 +2,14 @@
 # -*- coding: utf-8 -*-
 #@script   : pre-commit.rb
 #@created  : 2013-03-29 10:15
-#@changed  : 2013-03-29 13:34
-#@revision : 3
+#@changed  : 2013-03-30 00:59
+#@revision : 4
 #@about    :
 
 # git diff --cached --name-status
 # git diff --cached --name-only
 # git diff --cached --name-status | awk '$1 != "R" { print $2 }'
 # git diff --cached --name-only --diff-filter=ACM
-
-# perl
-# git diff --cached --name-status | while read st file; do
-#        # skip deleted files
-#        if [ "$st" == 'D' ]; then continue; fi
-#        # do a check only on the perl files
-#        if [[ "$file" =~ "(.pm|.pl)$" ]] && ! perl -c "$file"; then
-#                echo "Perl syntax check failed for file: $file"
-#                exit 1
-#        fi
-# done
 
 fileNames = `git diff --cached --name-only --diff-filter=ACM`
 
@@ -30,19 +19,19 @@ fileNames.split(/\n/).each() { |name|
         # change modification date
         time = Time.new
         ret = time.strftime("%Y-%m-%d %H:%M")
-        `sed -i -r 's/\@changed  : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\@changed  : #{ret}/' #{name}`
+        `sed -i -r 's/(@changed\s*:\s+)[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\\1#{ret}/' #{name}`
         # change script revision
         value = 0
         File.open(name) do |f|
             script = f.read()
             #if match = Regexp.new("@revision : (\d+)").match(script)
-            if match = /\@revision : (\d+)/.match(script)
+            if match = /@revision : (\d+)/.match(script)
                 value = match[1].to_i + 1
             end
         end
         if value
             puts "Changing revision to #{value}"
-            `sed -i -r 's/\@revision : [0-9]+/\@revision : #{value}/' #{name}`
+            `sed -i -r 's/(@revision\s*:\s+)[[:digit:]]+/\\1#{value}/' #{name}`
         end
         # add changes to commit
         `git add #{name}`
