@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #@script   : pre-commit.rb
 #@created  : 2013-03-29 10:15
-#@changed  : 2013-03-29 12:34
-#@revision : 1
+#@changed  : 2013-03-29 13:14
+#@revision : 2
 #@about    :
 
 # git diff --cached --name-status
@@ -33,7 +33,15 @@ fileNames.split(/\n/).each() { |name|
         ret = time.strftime("%Y-%m-%d %H:%M")
         `sed -i -r 's/\@changed  : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\@changed  : #{ret}/' #{name}`
         # change script revision
-        #Regexp.new("@revision : \d+").match(string)
+        #value = 0
+        #File.open(name) do |f|
+        #    script = f.read()
+        #    #if Regexp.new("@revision : (\d+)").match(script)
+        #    if /\@revision : (\d+)/.match(script) { value = #$1 + 1 }
+        #end
+        #if value
+        #    `sed -i -r 's/\@revision : \d+/\@revision : #{value}/' #{name}`
+        #end
         # add changes to commit
         `git add #{name}`
     end
