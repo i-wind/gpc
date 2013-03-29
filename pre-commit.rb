@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #@script   : pre-commit.rb
 #@created  : 2013-03-29 10:15
-#@changed  : 2013-03-29 12:26
+#@changed  : 2013-03-29 12:34
 #@revision : 1
 #@about    :
 
@@ -24,7 +24,6 @@
 puts "Successfull commit"
 
 fileNames = `git diff --cached --name-only --diff-filter=ACM`
-puts fileNames
 
 fileNames.split(/\n/).each() { |name|
     if name =~ /(\.rb|\.py)$/
@@ -35,6 +34,8 @@ fileNames.split(/\n/).each() { |name|
         `sed -i -r 's/\@changed  : [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\@changed  : #{ret}/' #{name}`
         # change script revision
         #Regexp.new("@revision : \d+").match(string)
+        # add changes to commit
+        `git add #{name}`
     end
 }
 
