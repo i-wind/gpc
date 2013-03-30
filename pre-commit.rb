@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #@script   : pre-commit.rb
 #@created  : 2013-03-29 10:15
-#@changed  : 2013-03-30 02:33
-#@revision : 6
+#@changed  : 2013-03-30 11:40
+#@revision : 7
 #@about    : git pre-commit hook to follow timestamp
 #            and revision of python and ruby scripts
 
@@ -22,9 +22,9 @@ fileNames.split(/\n/).each() { |name|
         # change modification date
         time = Time.new
         now = time.strftime("%Y-%m-%d %H:%M")
-        result = script.gsub(/(@changed\s*:\s+)\d{4}-\d{2}-\d{2} \d{2}:\d{2}/) {|m| "%s%s" % [$1, now] }
+        result = script.sub(/(@changed\s*:\s+)\d{4}-\d{2}-\d{2} \d{2}:\d{2}/) {|m| "%s%s" % [$1, now] }
         # change script revision
-        result = result.gsub(/(@revision\s*:\s+)(\d+)/) {|m| "%s%d" % [$1, $2.to_i + 1] }
+        result = result.sub(/(@revision\s*:\s+)(\d+)/) {|m| "%s%d" % [$1, $2.to_i + 1] }
         # write back to script
         File.open(name, 'w') {|f| f.write(result) }
         # add changes to commit
