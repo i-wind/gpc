@@ -3,8 +3,8 @@
 --[[
  @script   : pre-commit.lua
  @created  : 2013-05-18 01:47
- @changed  : 2013-05-18 13:29
- @revision : 4
+ @changed  : 2013-05-18 14:50
+ @revision : 5
  @about    : git pre-commit hook to follow script's
              timestamp and revision
 ]]
@@ -30,8 +30,7 @@ local file_names = pipe:read '*a'
 pipe:close()
 
 for num, file_name in ipairs(file_names:split("\n")) do
-
-    if file_name ~= "" then
+    if file_name:match("%.py$") or file_name:match("%.rb$") or file_name:match("%.lua$") then
         local f = io.open(file_name, "r")
         local script = f:read("*all")
         f:close()
@@ -42,7 +41,7 @@ for num, file_name in ipairs(file_names:split("\n")) do
         -- increment revision
         local text, rev = string.match(script, "(@revision%s*:%s+)(%d+)")
         local revision = tonumber(rev) + 1
-        script = string.gsub(script, "(@revision%s*:%s+)(%d+)", "%1" .. revision))
+        script = string.gsub(script, "(@revision%s*:%s+)(%d+)", "%1" .. revision)
 
         f = io.open(file_name, "w")
         f:write(script)
@@ -50,7 +49,10 @@ for num, file_name in ipairs(file_names:split("\n")) do
 
         os.execute('git add ' .. file_name)
     end
-
 end
 
-os.exit(0)
+-- if exit status other then 0 commit will fail
+-- in an emergency the hook can be bypassed by passing –no-verify:
+-- $ git commit --no-verify ...
+
+os.exit(0)  -- exit success
