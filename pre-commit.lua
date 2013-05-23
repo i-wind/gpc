@@ -3,8 +3,8 @@
 --[[
  @script   : pre-commit.lua
  @created  : 2013-05-18 01:47
- @changed  : 2013-05-18 14:50
- @revision : 5
+ @changed  : 2013-05-18 15:07
+ @revision : 6
  @about    : git pre-commit hook to follow script's
              timestamp and revision
 ]]
@@ -36,12 +36,12 @@ for num, file_name in ipairs(file_names:split("\n")) do
         f:close()
 
         -- replace change date
-        script = string.gsub(script, "(@changed%s*:%s+)(%d+-%d+-%d+ %d+:%d+)",
+        script = script:gsub("(@changed%s*:%s+)(%d+-%d+-%d+ %d+:%d+)",
                              "%1" .. os.date("%Y-%m-%d %H:%M"))
         -- increment revision
-        local text, rev = string.match(script, "(@revision%s*:%s+)(%d+)")
-        local revision = tonumber(rev) + 1
-        script = string.gsub(script, "(@revision%s*:%s+)(%d+)", "%1" .. revision)
+        script = script:gsub("(@revision%s*:%s+)(%d+)", function(tag, rev)
+                                    return tag .. tostring(tonumber(rev) + 1)
+                                end)
 
         f = io.open(file_name, "w")
         f:write(script)
