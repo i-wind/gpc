@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #@script   : pre-commit.rb
 #@created  : 2013-03-29 10:15
-#@changed  : 2013-05-24 00:01
-#@revision : 11
+#@changed  : 2013-05-24 02:52
+#@revision : 12
 #@about    : git pre-commit hook to follow timestamp
 #            and revision of python and ruby scripts
 
@@ -16,7 +16,7 @@
 fileNames = `git diff --cached --name-only --diff-filter=ACM`
 
 fileNames.split(/\n/).each { |name|
-  if name =~ /(\.rb|\.py)$/  # watching ruby & python scripts
+  if name =~ /(\.rb|\.py|\.lua)$/  # watching ruby | python | lua scripts
     # current script text
     script = File.read(name)
     # change modification date

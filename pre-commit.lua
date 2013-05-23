@@ -3,8 +3,8 @@
 --[[
  @script   : pre-commit.lua
  @created  : 2013-05-18 01:47
- @changed  : 2013-05-18 15:11
- @revision : 7
+ @changed  : 2013-05-24 02:52
+ @revision : 8
  @about    : git pre-commit hook to follow script's
              timestamp and revision
 ]]
@@ -30,7 +30,7 @@ local file_names = pipe:read '*a'
 pipe:close()
 
 for num, file_name in ipairs(file_names:split("\n")) do
-    -- watching ruby & python & lua scripts
+    -- watching ruby | python | lua scripts
     if file_name:match("%.py$") or file_name:match("%.rb$") or file_name:match("%.lua$") then
         -- current script text
         local f = io.open(file_name, "r")
