@@ -19,8 +19,9 @@ if [ -z $ext ]; then
 fi
 
 dt=$(date "+%Y-%m-%d %H:%M")
-
 sed -i -r "s/(@changed.*)[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\1$dt/g" $script
-sed -i -r 's/(@revision.*)([0-9]+)/echo \1$((\2+1))/e' $script
+
+revision=`grep -E ^.*@revision $script | grep -Eo [0-9]+`
+sed -i -r "s/(.*@revision.*)([0-9]+)/\1`expr $revision + 1`/" $script
 
 exit 0
