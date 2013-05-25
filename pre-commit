@@ -1,0 +1,26 @@
+#!/bin/bash
+# Bash script: pre-commit
+# Created: 2013-05-24 23:56
+
+if [ -z "$1" ]; then
+    echo "description"
+    echo "Usage: `basename $0` file-name"
+    exit 65
+fi
+
+script=$1
+
+#ext=$(echo $script | grep -e "\.py$")
+ext=$(echo $script | grep -Po "\.(py|rb|lua)$")
+
+if [ -z $ext ]; then
+    echo "Extension must be .py or .rb or .lua"
+    exit 1
+fi
+
+dt=$(date "+%Y-%m-%d %H:%M")
+
+sed -i -r "s/(@changed.*)[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/\1$dt/g" $script
+sed -i -r 's/(@revision.*)([0-9]+)/echo \1$((\2+1))/e' $script
+
+exit 0
