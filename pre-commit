@@ -1,15 +1,15 @@
 #!/bin/bash
 # @script   : pre-commit
 # @created  : 2013-05-24 23:56
-# @changed  : 2013-05-26 03:04
-# @revision : 6
+# @changed  : 2013-07-20 10:48
+# @revision : 7
 # @about    : git pre-commit hook
 
 # file names in the current commit (except removed)
 for name in `git diff --cached --name-only --diff-filter=ACM`; do
     # check extension
-    ext=$(echo $name | grep -Po "\.(py|rb|lua)$")
-    # watching python | ruby | lua scripts
+    ext=$(echo $name | grep -Po "\.(py|rb|lua|c|h|cpp|hpp|cc|hh)$")
+    # watching python | ruby | lua scripts | c/c++
     if [ ! -z $ext ]; then
         script=$name
         # modify changed time
